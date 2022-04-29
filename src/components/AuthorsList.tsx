@@ -24,6 +24,7 @@ export class AuthorFilterableSearchableListProps extends BaseFilterableSearchabl
   }
 
   public renderUI = (entity: IEntity) => {
+    console.log(`Preparing to render author id=${entity.id}`);
     return (
       <Author
         key={`author-l-${entity.id}`}

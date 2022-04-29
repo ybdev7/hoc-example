@@ -26,6 +26,7 @@ export class BookFilterableSearchableListProps extends BaseFilterableSearchableL
   }
 
   public renderUI = (entity: IEntity) => {
+    console.log(`Will render book id=${entity.id}`);
     return <Book key={`book-l-${entity.id}`} book={entity as IBook} />;
   };
 
