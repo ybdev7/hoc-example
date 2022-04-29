@@ -35,6 +35,7 @@ export const books: Array<IBook> = [
     authors: [authors[0]],
     pubDate: new Date(1865, 11, 18),
     rating: 2.2,
+    price: 20.0,
   },
   {
     id: "book2",
@@ -42,6 +43,7 @@ export const books: Array<IBook> = [
     authors: [authors[1]],
     pubDate: new Date(1845, 7, 1),
     rating: 3.3,
+    price: 30.0,
   },
   {
     id: "book3",
@@ -49,5 +51,14 @@ export const books: Array<IBook> = [
     authors: [authors[2]],
     pubDate: new Date(1847, 12, 1),
     rating: 4.4,
+    price: 40.0,
+  },
+  {
+    id: "book4",
+    name: "Wuthering Heights - Special Edition",
+    authors: [authors[2]],
+    pubDate: new Date(1847, 12, 1),
+    rating: 4.4,
+    price: 50.0,
   },
 ];

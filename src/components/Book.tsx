@@ -25,6 +25,7 @@ const Book = ({ book }: IBookProps) => {
         ))}
 
         <span>{" Rating: " + book.rating}</span>
+        <span>{" Price: $" + book.price}</span>
       </div>
     </>
   );

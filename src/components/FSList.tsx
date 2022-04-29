@@ -1,18 +1,9 @@
 import {
-  AuthorFiltersBuilder,
-  BookFiltersBuilder,
-} from "../factory/FilterFactory";
-import {
   FilterTerm,
-  IAuthor,
-  IBook,
   IEntity,
   IFilterBuilder,
-  IGenericFilterableListProps,
   IGenericFilterableSearchableListProps,
 } from "../interfaces/Interfaces";
-import Author from "./Author";
-import Book from "./Book";
 import { withFilterable } from "./FilterableList";
 import { withSearchable } from "./SearchableList";
 
@@ -48,7 +39,7 @@ export abstract class BaseFilterableSearchableListProps
 {
   public data: IEntity[];
   public searchS: string;
-  public filterInfo: FilterTerm | null;
+  public filterInfo: FilterTerm[] | null;
 
   constructor(data: IEntity[]) {
     this.data = data;
@@ -64,7 +55,12 @@ export abstract class BaseFilterableSearchableListProps
     return entity.id;
   };
 
-  public filterBy = (b: IEntity, filterTerm: FilterTerm): boolean => {
-    return filterTerm.compFn(b);
+  public filterBy = (b: IEntity, filterTerm: FilterTerm[]): boolean => {
+    console.log(`number of filters :: filterTerm.length=${filterTerm.length}`);
+    let inFilter = true;
+    filterTerm.map((term) => {
+      inFilter = inFilter && term.compFn(b);
+    });
+    return inFilter;
   };
 }

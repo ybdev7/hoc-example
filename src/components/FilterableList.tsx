@@ -1,55 +1,57 @@
 import { v4 as uuidv4 } from "uuid";
 import React, { useState } from "react";
-import { UNCHOOSABLE } from "../factory/FilterFactory";
+import { FilterNames } from "../factory/FilterFactory";
 import {
   ExtraType,
   FilterableItem,
+  FilterTerm,
   IEntity,
   IGenericFilterableListProps,
 } from "../interfaces/Interfaces";
+import FilterUI from "./FilterUI";
 
 export function withFilterable<P extends IGenericFilterableListProps<IEntity>>(
   WrappedComponentA: React.ComponentType<P>
 ) {
   const ComponentWithFilter = (props: Omit<P, keyof ExtraType>) => {
-    const filterItems = props.filterBuilder.getFilterItems();
-    const [filterStr, setFilterStr] = useState<FilterableItem>(filterItems[0]);
+    //get all available filters as pairs pf <filter name, default option for filtering>
+    const [filters, setFilters] = useState<Map<FilterNames, FilterableItem>>(
+      new Map(props.filterBuilder.getDefaultFilters())
+    );
 
-    const filterTerm = props.filterBuilder.getFilterTerm(filterStr);
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const term = filterItems.find((item) => {
-        if (item.displayValue === parseInt(event.target.value)) return item;
-      });
-      if (term) {
-        setFilterStr(term);
-      }
+    const handleFilterChange = (
+      filterName: FilterNames,
+      filter: FilterableItem
+    ) => {
+      setFilters(new Map(filters).set(filterName, filter));
     };
 
+    //set filtering terms (the condition function) for each filter
+    const filterTerms: FilterTerm[] = [];
+    filters.forEach((value, key) =>
+      filterTerms.push(props.filterBuilder.getFilterTerm(value))
+    );
+
+    //generate filters' ui
+    const ui: React.ReactNode[] = [];
     return (
       <>
-        <p>
-          <label htmlFor="filter1">Rating</label>
-          <select
-            id={"filter1"}
-            value={filterStr.displayValue}
-            onChange={handleInputChange}
-          >
-            {filterItems.map(
-              (i) =>
-                i && (
-                  <option
-                    key={uuidv4()}
-                    disabled={i.displayValue === UNCHOOSABLE}
-                    value={i.displayValue}
-                  >
-                    {i.displayName}
-                  </option>
-                )
-            )}
-          </select>
-        </p>
-        <WrappedComponentA {...(props as P)} filterInfo={filterTerm} />
+        {props.filterBuilder
+          .getFilters()
+          .forEach((filterItems, filterName) =>
+            ui.push(
+              <FilterUI
+                key={uuidv4()}
+                handleFilterChange={handleFilterChange}
+                filterName={filterName}
+                items={filterItems}
+                choosen={filters.get(filterName)}
+                label={props.filterBuilder.getFilterDisplayLabel(filterName)}
+              />
+            )
+          )}
+        <p>{ui}</p>
+        <WrappedComponentA {...(props as P)} filterInfo={[...filterTerms]} />
       </>
     );
   };

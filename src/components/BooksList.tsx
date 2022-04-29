@@ -19,8 +19,9 @@ export class BookFilterableSearchableListProps extends BaseFilterableSearchableL
   constructor(data: IBook[]) {
     super(data);
     this.data = data;
-    this.filterInfo = null;
+
     this.filterBuilder = new BookFiltersBuilder();
+    this.filterInfo = this.filterBuilder.getFilterTerms();
     this.searchS = "";
   }
 

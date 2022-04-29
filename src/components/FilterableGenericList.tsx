@@ -22,7 +22,7 @@ const FGenericList = <T extends IEntity>({
   filterInfo,
 }: IGenericFilterableListProps<T>) => {
   const filtering = (entity: T) => {
-    if (filterInfo) return filterBy(entity, filterInfo);
+    if (filterInfo) return filterBy(entity, filterInfo); //tbd
   };
 
   return (
@@ -57,10 +57,10 @@ export class BookFilterableListProps
     return <Book key={`book-l-${entity.id}`} book={entity as IBook} />;
   };
 
-  public filterBy = (b: IEntity, filterTerm: FilterTerm): boolean => {
-    return filterTerm.compFn(b);
+  public filterBy = (b: IEntity, filterTerm: FilterTerm[]): boolean => {
+    return filterTerm[0].compFn(b); //tbd
   };
-  public filterInfo: FilterTerm | null;
+  public filterInfo: FilterTerm[] | null;
 }
 
 export class AuthorFilterableListProps
@@ -82,8 +82,8 @@ export class AuthorFilterableListProps
     return <Author author={entity as IAuthor} showDetailedView />;
   };
 
-  public filterBy = (b: IEntity, filterTerm: FilterTerm): boolean => {
-    return filterTerm.compFn(b);
+  public filterBy = (b: IEntity, filterTerm: FilterTerm[]): boolean => {
+    return filterTerm[0].compFn(b); //tbd
   };
-  public filterInfo: FilterTerm | null;
+  public filterInfo: FilterTerm[] | null;
 }
