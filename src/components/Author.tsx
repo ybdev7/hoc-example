@@ -1,5 +1,6 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Genre } from "../interfaces/Entity";
 import { IAuthor } from "../interfaces/Interfaces";
 
 interface IAuthorProps {
@@ -12,6 +13,21 @@ interface IAuthorProps {
  */
 const Author = React.memo(
   ({ author, showDetailedView = false }: IAuthorProps) => {
+    const genreToString = (genre: Genre): string => {
+      switch (genre) {
+        case Genre.Adventure:
+          return "Adventure";
+        case Genre.SciFi:
+          return "Science Fiction";
+        case Genre.Fantacy:
+          return "Fantacy";
+        case Genre.HistoricalFiction:
+          return "Historical Fiction";
+        default:
+          return "";
+      }
+    };
+
     console.log(`Actually rendering author id=${author.id}`);
     return (
       <>
@@ -31,9 +47,9 @@ const Author = React.memo(
                   <span>
                     {index + 1 < author.genre.length &&
                     author.genre.length > 1 ? (
-                      <span>{genre + ", "}</span>
+                      <span>{genreToString(genre) + ", "}</span>
                     ) : (
-                      <span>{genre}</span>
+                      <span>{genreToString(genre)}</span>
                     )}
                   </span>
                 </span>

@@ -1,4 +1,4 @@
-import { reduceEachTrailingCommentRange } from "typescript";
+import { Genre } from "../interfaces/Entity";
 import {
   FilterableItem,
   FilterTerm,
@@ -88,6 +88,38 @@ export class FiltersFactory {
     return filterItems;
   };
 
+  static getGenreFilterItems = (): FilterableItem[] => {
+    const filterItems: FilterableItem[] = [
+      {
+        displayName: "Choose Genre",
+        displayValue: UNCHOOSABLE,
+        filterName: FilterNames.Genre,
+      },
+      { displayName: "All", displayValue: 0, filterName: FilterNames.Genre },
+      {
+        displayName: "Adventure",
+        displayValue: Genre.Adventure,
+        filterName: FilterNames.Genre,
+      },
+      {
+        displayName: "Historical Fiction",
+        displayValue: Genre.HistoricalFiction,
+        filterName: FilterNames.Genre,
+      },
+      {
+        displayName: "Science Fiction",
+        displayValue: Genre.SciFi,
+        filterName: FilterNames.Genre,
+      },
+      {
+        displayName: "Fantacy",
+        displayValue: Genre.Fantacy,
+        filterName: FilterNames.Genre,
+      },
+    ];
+    return filterItems;
+  };
+
   static getRatingTerm = (filterStr: FilterableItem): FilterTerm => {
     const filterTerm: FilterTerm = {
       filterName: filterStr.filterName,
@@ -109,6 +141,22 @@ export class FiltersFactory {
           filterStr.displayValue === 0 || //All
           ((item as IBook).price <= filterStr.displayValue &&
             (item as IBook).price > filterStr.displayValue - 10)
+        );
+      },
+    };
+
+    return filterTerm;
+  };
+
+  static getGenreTerm = (filterStr: FilterableItem): FilterTerm => {
+    const filterTerm: FilterTerm = {
+      filterName: filterStr.filterName,
+      filterValue: filterStr,
+      compFn: (item: any) => {
+        return (
+          filterStr.displayValue === 0 || //All
+          filterStr.displayValue === UNCHOOSABLE ||
+          (item as IAuthor).genre.indexOf(filterStr.displayValue as Genre) >= 0
         );
       },
     };
@@ -151,23 +199,20 @@ export abstract class BaseFilterBuilder implements IFilterBuilder<IEntity> {
   };
 
   getFilterTerm = (filterStr: FilterableItem): FilterTerm => {
-    if (filterStr.filterName === FilterNames.Rating) {
-      return FiltersFactory.getRatingTerm(filterStr);
-    } else if (filterStr.filterName === FilterNames.Price) {
-      return FiltersFactory.getPriceTerm(filterStr);
-    } else {
-      return FiltersFactory.getRatingTerm(filterStr); //tbd
+    switch (filterStr.filterName) {
+      case FilterNames.Rating:
+        return FiltersFactory.getRatingTerm(filterStr);
+      case FilterNames.Price:
+        return FiltersFactory.getPriceTerm(filterStr);
+      case FilterNames.Genre:
+        return FiltersFactory.getGenreTerm(filterStr);
+      default:
+        return FiltersFactory.getRatingTerm(filterStr);
     }
   };
 
-  public getDefaultFilters = (): Map<FilterNames, FilterableItem> => {
-    const deafults = new Map<FilterNames, FilterableItem>();
-    deafults.set(
-      FilterNames.Rating,
-      this.getFilterItems(FilterNames.Rating)[0]
-    );
-    return deafults;
-  };
+  public abstract getDefaultFilters: () => Map<FilterNames, FilterableItem>;
+
   public abstract getFilters: () => Map<FilterNames, FilterableItem[]>;
 
   public abstract getFilterTerms: () => FilterTerm[];
@@ -219,9 +264,21 @@ export class AuthorFiltersBuilder extends BaseFilterBuilder {
   constructor() {
     super();
     this.filters.set(FilterNames.Rating, FiltersFactory.getRatingFilterItems());
+    this.filters.set(FilterNames.Genre, FiltersFactory.getGenreFilterItems());
   }
   public getFilters = (): Map<FilterNames, FilterableItem[]> => {
     return this.filters;
+  };
+
+  public getDefaultFilters = (): Map<FilterNames, FilterableItem> => {
+    const defaults = new Map<FilterNames, FilterableItem>();
+    defaults.set(
+      FilterNames.Rating,
+      this.getFilterItems(FilterNames.Rating)[0]
+    );
+
+    defaults.set(FilterNames.Genre, this.getFilterItems(FilterNames.Genre)[0]);
+    return defaults;
   };
 
   public getFilterTerms = (): FilterTerm[] => {
@@ -231,16 +288,11 @@ export class AuthorFiltersBuilder extends BaseFilterBuilder {
         displayValue: 0,
         filterName: FilterNames.Rating,
       }),
+      this.getFilterTerm({
+        displayName: "All",
+        displayValue: 0,
+        filterName: FilterNames.Genre,
+      }),
     ];
-  };
-
-  public getDefaultFilters = (): Map<FilterNames, FilterableItem> => {
-    const deafults = new Map<FilterNames, FilterableItem>();
-    deafults.set(
-      FilterNames.Rating,
-      this.getFilterItems(FilterNames.Rating)[0]
-    );
-
-    return deafults;
   };
 }

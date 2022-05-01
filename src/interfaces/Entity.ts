@@ -1,6 +1,6 @@
 export enum Genre {
-  Adventure = "Adventure",
-  HistoricalFiction = "Historical Fiction",
-  SciFi = "SciFi",
-  Fantacy = "Fantacy",
+  Adventure = 1,
+  HistoricalFiction = 2,
+  SciFi = 3,
+  Fantacy = 4,
 }
