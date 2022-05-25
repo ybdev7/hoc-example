@@ -12,13 +12,14 @@ export function withSearchable<P extends Searchable>(
     };
     return (
       <>
-        <p>
+        <div className="search-div">
           <input
+            className="search-input"
             value={searchStr}
             onChange={handleInputChange}
             placeholder="Search..."
           ></input>
-        </p>
+        </div>
         <WrappedComponent {...(props as P)} searchS={searchStr} />
       </>
     );

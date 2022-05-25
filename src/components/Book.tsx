@@ -13,7 +13,7 @@ const Book = React.memo(({ book }: IBookProps) => {
   console.log(`Actually rendering book id=${book.id}`);
   return (
     <>
-      <div>
+      <div className="book-contents">
         <span>
           <b>{book.name}</b>
         </span>

@@ -31,7 +31,7 @@ const Author = React.memo(
     console.log(`Actually rendering author id=${author.id}`);
     return (
       <>
-        <div>
+        <div className={showDetailedView ? "author-contents" : ""}>
           <span>
             <b>{author.first + " " + author.last}</b>
           </span>{" "}

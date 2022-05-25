@@ -29,8 +29,13 @@ const FilterUI = ({
   };
   return (
     <>
-      {showLabel && <label htmlFor="filter1">{label}</label>}
+      {showLabel && (
+        <label className="filters-label" htmlFor="filter1">
+          {label}
+        </label>
+      )}
       <select
+        className="filters-select"
         id={uuidv4()}
         value={choosen ? choosen.displayValue : items[0].displayValue}
         onChange={handleInputChange}

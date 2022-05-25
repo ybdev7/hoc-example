@@ -50,7 +50,7 @@ export function withFilterable<P extends IGenericFilterableListProps<IEntity>>(
               />
             )
           )}
-        <p>{ui}</p>
+        <div className="filters-div">{ui}</div>
         <WrappedComponentA {...(props as P)} filterInfo={[...filterTerms]} />
       </>
     );
